@@ -1,4 +1,4 @@
-import {getGoogleCoords, getGridSize} from "../../data/data.js";
+import {getGoogleCoords, getGridSize} from "../../../data/data.js";
 import {Google} from "./google/Google.js";
 
 export function GameGrid() {

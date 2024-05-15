@@ -1,4 +1,4 @@
-import {catchGoogle} from "../../../data/data.js";
+import {catchGoogle} from "../../../../data/data.js";
 
 export function Google(){
     let element=document.createElement('span')

@@ -1,4 +1,4 @@
-import {getCatchPoint} from "../../data/data.js";
+import {getCatchPoint} from "../../../data/data.js";
 
 export function GameResult(){
     let element=document.createElement('span')
