@@ -1,8 +1,12 @@
 import {start} from "../../data/data.js";
 
-export function Settings(){
-    let startButton=document.createElement('button')
+export function Settings() {
+    let container = document.createElement('div')
+
+
+    let startButton = document.createElement('button')
     startButton.append('Start Game')
     startButton.addEventListener('click', start)
-    return startButton
+    container.append(gridSizeSelect, pointsToWinSelect, maxMissSelect, startButton)
+    return container
 }
