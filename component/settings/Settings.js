@@ -1,4 +1,5 @@
-import {start} from "../../data/data.js";
+import {getGridSize, start} from "../../data/data.js";
+import {Select} from "./Select.js";
 
 export function Settings() {
     let container = document.createElement('div')
@@ -7,6 +8,6 @@ export function Settings() {
     let startButton = document.createElement('button')
     startButton.append('Start Game')
     startButton.addEventListener('click', start)
-    container.append(gridSizeSelect, pointsToWinSelect, maxMissSelect, startButton)
+    container.append(Select(getGridSize()), startButton)
     return container
 }

@@ -12,31 +12,42 @@ const _data = {
     settings: {
         gridSize: [
             {
+                id: 0,
                 x: 4,
-                y: 4
+                y: 4,
+                isSelected: false
             },
             {
+                id: 1,
                 x: 5,
-                y: 5
+                y: 5,
+                isSelected: false
             },
             {
+                id: 2,
                 x: 6,
-                y: 6
+                y: 6,
+                isSelected: false
             },
             {
+                id: 3,
                 x: 7,
-                y: 7
+                y: 7,
+                isSelected: false
             },
             {
+                id: 4,
                 x: 8,
-                y: 8
+                y: 8,
+                isSelected: false
             },
         ],
         currentGridSize: {
-            x: 0,
-            y: 0
+            x: 4,
+            y: 4
         },
         pointToWin: 5,
+        //currentPointToWin: 5,
         pointToLose: 5
     },
     heroes: {
@@ -62,9 +73,11 @@ export function getMissPoint() {
 }
 
 export function getGridSize() {
-    return {
-        ..._data.settings.gridSize
-    }
+    return _data.settings.gridSize
+}
+
+export function getCurrentGridSize() {
+    return _data.settings.currentGridSize
 }
 
 export function getGoogleCoords() {
@@ -91,7 +104,7 @@ export function start() {
         }
         subscriber()
 
-    }, 1000)
+    }, 3000)
 
     subscriber()
 
@@ -106,11 +119,11 @@ function randomCoords(coords) {
 }
 
 export function changeGoogleCoords() {
-    let newGoogleRowCoords = randomCoords(_data.settings.gridSize.x);
-    let newGoogleCellCoords = randomCoords(_data.settings.gridSize.y);
+    let newGoogleRowCoords = randomCoords(_data.settings.currentGridSize.x);
+    let newGoogleCellCoords = randomCoords(_data.settings.currentGridSize.y);
     if (newGoogleRowCoords === _data.heroes.google.googleCoords.x && newGoogleCellCoords === _data.heroes.google.googleCoords.y) {
-        newGoogleRowCoords = randomCoords(_data.settings.gridSize.x)
-        newGoogleCellCoords = randomCoords(_data.settings.gridSize.y)
+        newGoogleRowCoords = randomCoords(_data.settings.currentGridSize.x)
+        newGoogleCellCoords = randomCoords(_data.settings.currentGridSize.y)
     }
     _data.heroes.google.googleCoords.x = newGoogleRowCoords
     _data.heroes.google.googleCoords.y = newGoogleCellCoords
@@ -133,6 +146,14 @@ export function playAgain() {
     _data.catch = 0
     _data.miss = 0
     _data.gameStatus = GAME_STATUS.GAME_SETTINGS
+    subscriber()
+}
+
+export function changeSelectOption(e) {
+    let id = e.currentTarget.value
+    _data.settings.currentGridSize.x = _data.settings.gridSize[id].x
+    _data.settings.currentGridSize.y = _data.settings.gridSize[id].y
+    _data.settings.gridSize[id].isSelected = true
     subscriber()
 }
 
