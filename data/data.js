@@ -42,13 +42,66 @@ const _data = {
                 isSelected: false
             },
         ],
+        pointToWin: [
+            {
+                id: 0,
+                point: 20,
+                isSelected: false
+            },
+            {
+                id: 1,
+                point: 40,
+                isSelected: false
+            },
+            {
+                id: 2,
+                point: 50,
+                isSelected: false
+            },
+            {
+                id: 3,
+                point: 60,
+                isSelected: false
+            },
+            {
+                id: 4,
+                point: 80,
+                isSelected: false
+            },
+        ],
+        pointToLose: [
+            {
+                id: 0,
+                miss: 5,
+                isSelected: false
+            },
+            {
+                id: 1,
+                miss: 10,
+                isSelected: false
+            },
+            {
+                id: 2,
+                miss: 15,
+                isSelected: false
+            },
+            {
+                id: 3,
+                miss: 20,
+                isSelected: false
+            },
+            {
+                id: 4,
+                miss: 25,
+                isSelected: false
+            },
+        ],
         currentGridSize: {
             x: 4,
             y: 4
         },
-        pointToWin: 5,
-        //currentPointToWin: 5,
-        pointToLose: 5
+        currentPointToWin: 20,
+        currentPointToLose: 20
     },
     heroes: {
         google: {
@@ -68,12 +121,20 @@ export function getCatchPoint() {
     return _data.catch
 }
 
-export function getMissPoint() {
+export function getMiss() {
     return _data.miss
+}
+
+export function getMissPoint() {
+    return _data.settings.pointToLose
 }
 
 export function getGridSize() {
     return _data.settings.gridSize
+}
+
+export function getPointToWin() {
+    return _data.settings.pointToWin
 }
 
 export function getCurrentGridSize() {
@@ -94,9 +155,8 @@ export function start() {
     _data.gameStatus = GAME_STATUS.GAME_IN_PROGRESS
 
     setIntervalId = setInterval(() => {
-        console.log('l')
         _data.miss++
-        if (_data.miss === _data.settings.pointToLose) {
+        if (_data.miss === _data.settings.currentPointToLose) {
             _data.gameStatus = GAME_STATUS.GAME_LOSE
             stopInterval()
         } else {
@@ -104,7 +164,7 @@ export function start() {
         }
         subscriber()
 
-    }, 3000)
+    }, 1000)
 
     subscriber()
 
@@ -133,7 +193,7 @@ export function changeGoogleCoords() {
 export function catchGoogle() {
     _data.catch++
     stopInterval()
-    if (_data.catch === _data.settings.pointToWin) {
+    if (_data.catch === _data.settings.currentPointToWin) {
         _data.gameStatus = GAME_STATUS.GAME_WIN
     } else {
         changeGoogleCoords()
@@ -149,11 +209,34 @@ export function playAgain() {
     subscriber()
 }
 
-export function changeSelectOption(e) {
-    let id = e.currentTarget.value
+export function changeGridSizeSelectOption(e) {
+    let id = +e.currentTarget.value
     _data.settings.currentGridSize.x = _data.settings.gridSize[id].x
     _data.settings.currentGridSize.y = _data.settings.gridSize[id].y
-    _data.settings.gridSize[id].isSelected = true
+    _data.settings.gridSize = _data.settings.gridSize.map((el => el.id === id ? {...el, isSelected: true} : {
+        ...el,
+        isSelected: false
+    }))
+    subscriber()
+}
+
+export function changePointToWinSelectOption(e) {
+    let id = +e.currentTarget.value
+    _data.settings.currentPointToWin = _data.settings.pointToWin[id].point
+    _data.settings.pointToWin = _data.settings.pointToWin.map(el => el.id === id ? {...el, isSelected: true} : {
+        ...el,
+        isSelected: false
+    })
+    subscriber()
+}
+
+export function changePointToMissSelectOption(e) {
+    let id = +e.currentTarget.value
+    _data.settings.currentPointToLose = _data.settings.pointToLose[id].miss
+    _data.settings.pointToLose = _data.settings.pointToLose.map(el => el.id === id ? {...el, isSelected: true} : {
+        ...el,
+        isSelected: false
+    })
     subscriber()
 }
 
