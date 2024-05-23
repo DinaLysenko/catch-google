@@ -2,7 +2,6 @@ import {changeGridSizeSelectOption, changePointToWinSelectOption} from "../../da
 
 export function GridSizeSelect(dataForGridSize) {
 
-    let element = document.createElement('div')
     let gridSizeSelect = document.createElement('select')
     for (let i = 0; i < dataForGridSize.length; i++) {
         let gridSizeSelectOption = document.createElement('option')
@@ -15,6 +14,6 @@ export function GridSizeSelect(dataForGridSize) {
         changeGridSizeSelectOption(e)
     })
 
-    element.append(gridSizeSelect)
-    return element
+
+    return gridSizeSelect
 }
