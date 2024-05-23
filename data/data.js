@@ -101,7 +101,7 @@ const _data = {
             y: 4
         },
         currentPointToWin: 20,
-        currentPointToLose: 20
+        currentPointToLose: 5
     },
     heroes: {
         google: {
