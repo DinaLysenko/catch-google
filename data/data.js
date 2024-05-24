@@ -240,6 +240,7 @@ export function changePointToMissSelectOption(e) {
     subscriber()
 }
 
+
 let subscriber = () => {
 }
 
