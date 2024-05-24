@@ -4,6 +4,7 @@ export const GAME_STATUS = {
     GAME_WIN: 'win',
     GAME_LOSE: 'lose'
 }
+
 const _data = {
     gameStatus: GAME_STATUS.GAME_SETTINGS,
     catch: 0,
@@ -110,8 +111,14 @@ const _data = {
                 y: 0
             }
         },
-        player1: {},
-        player2: {}
+        player1: {
+            x: 1,
+            y: 1
+        },
+        player2: {
+            x: 2,
+            y: 2
+        }
     }
 }
 
@@ -149,6 +156,14 @@ export function getGameStatus() {
     return _data.gameStatus
 }
 
+export function getPlayer1Coords() {
+    return _data.heroes.player1
+}
+
+export function getPlayer2Coords() {
+    return _data.heroes.player2
+}
+
 let setIntervalId
 
 export function start() {
@@ -179,14 +194,15 @@ function randomCoords(coords) {
 }
 
 export function changeGoogleCoords() {
-    let newGoogleRowCoords = randomCoords(_data.settings.currentGridSize.x);
-    let newGoogleCellCoords = randomCoords(_data.settings.currentGridSize.y);
-    if (newGoogleRowCoords === _data.heroes.google.googleCoords.x && newGoogleCellCoords === _data.heroes.google.googleCoords.y) {
-        newGoogleRowCoords = randomCoords(_data.settings.currentGridSize.x)
-        newGoogleCellCoords = randomCoords(_data.settings.currentGridSize.y)
+      do {
+        var newGoogleRowCoords = randomCoords(_data.settings.currentGridSize.x);
+        var newGoogleCellCoords = randomCoords(_data.settings.currentGridSize.y);
     }
-    _data.heroes.google.googleCoords.x = newGoogleRowCoords
-    _data.heroes.google.googleCoords.y = newGoogleCellCoords
+      while (newGoogleRowCoords === _data.heroes.google.googleCoords.x && newGoogleCellCoords === _data.heroes.google.googleCoords.y)
+    {
+        _data.heroes.google.googleCoords.x = newGoogleRowCoords
+        _data.heroes.google.googleCoords.y = newGoogleCellCoords
+    }
     subscriber()
 }
 
@@ -240,6 +256,13 @@ export function changePointToMissSelectOption(e) {
     subscriber()
 }
 
+
+
+export function validatePlayerNumber(playerNumber) {
+    if (![1, 2].some(number => number === playerNumber)) {
+        throw new Error('Incorrect player number')
+    }
+}
 
 let subscriber = () => {
 }
