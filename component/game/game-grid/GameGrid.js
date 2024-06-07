@@ -4,9 +4,9 @@ import {Player} from "./player/Player.js";
 
 export function GameGrid() {
     let grid = document.createElement('table')
-    for (let x = 0; x < getCurrentGridSize().x; x++) {
+    for (let y = 0; y < getCurrentGridSize().y; y++) {
         let row = document.createElement('tr')
-        for (let y = 0; y < getCurrentGridSize().y; y++) {
+        for (let x = 0; x < getCurrentGridSize().x; x++) {
             let cell = document.createElement('td')
             row.append(cell)
             if (getGoogleCoords().x === x && getGoogleCoords().y === y) {

@@ -4,10 +4,19 @@ export const GAME_STATUS = {
     GAME_WIN: 'win',
     GAME_LOSE: 'lose'
 }
+export const MOVING_DIRECTION = {
+    LEFT: 'left',
+    RIGHT: 'right',
+    UP: 'up',
+    DOWN: 'down'
+}
 
 const _data = {
     gameStatus: GAME_STATUS.GAME_SETTINGS,
-    catch: 0,
+    catch: {
+        player1: 0,
+        player2: 0,
+    },
     miss: 0,
     time: new Date(),
     settings: {
@@ -164,6 +173,8 @@ export function getPlayer2Coords() {
     return _data.heroes.player2
 }
 
+
+
 let setIntervalId
 
 export function start() {
@@ -179,7 +190,7 @@ export function start() {
         }
         subscriber()
 
-    }, 1000)
+    }, 3000)
 
     subscriber()
 
@@ -194,22 +205,26 @@ function randomCoords(coords) {
 }
 
 export function changeGoogleCoords() {
-      do {
-        var newGoogleRowCoords = randomCoords(_data.settings.currentGridSize.x);
-        var newGoogleCellCoords = randomCoords(_data.settings.currentGridSize.y);
+    let newX = _data.heroes.google.googleCoords.x
+    let newY = _data.heroes.google.googleCoords.y
+    do {
+        newX = randomCoords(_data.settings.currentGridSize.x);
+        newY = randomCoords(_data.settings.currentGridSize.y);
     }
-      while (newGoogleRowCoords === _data.heroes.google.googleCoords.x && newGoogleCellCoords === _data.heroes.google.googleCoords.y)
-    {
-        _data.heroes.google.googleCoords.x = newGoogleRowCoords
-        _data.heroes.google.googleCoords.y = newGoogleCellCoords
-    }
+    while (newX === _data.heroes.google.googleCoords.x && newY === _data.heroes.google.googleCoords.y
+        || newX === _data.heroes.player1.x && newY === _data.heroes.player1.y
+        || newX === _data.heroes.player2.x && newY === _data.heroes.player2.y
+        )
+    _data.heroes.google.googleCoords.x = newX
+    _data.heroes.google.googleCoords.y = newY
+
     subscriber()
 }
 
-export function catchGoogle() {
-    _data.catch++
+function catchGoogle(playerNumber) {
+    _data.catch[`player${playerNumber}`]++
     stopInterval()
-    if (_data.catch === _data.settings.currentPointToWin) {
+    if (_data.catch[`player${playerNumber}`] === _data.settings.currentPointToWin) {
         _data.gameStatus = GAME_STATUS.GAME_WIN
     } else {
         changeGoogleCoords()
@@ -256,7 +271,56 @@ export function changePointToMissSelectOption(e) {
     subscriber()
 }
 
+export function movePlayer(playerNumber, direction) {
+    let newCoords = {..._data.heroes[`player${playerNumber}`]}
+    switch (direction) {
+        case MOVING_DIRECTION.LEFT: {
+            newCoords.x--;
+            break;
+        }
+        case MOVING_DIRECTION.RIGHT: {
+            newCoords.x++;
+            break;
+        }
+        case MOVING_DIRECTION.DOWN: {
+            newCoords.y++;
+            break;
+        }
+        case MOVING_DIRECTION.UP: {
+            newCoords.y--;
+            break;
+        }
+    }
+    let isValid = checkIsValidCoords(newCoords)
+    if (!isValid) return
+    let isMatchWithOtherPlayer = checkWithOtherPlayer(newCoords)
+    if (isMatchWithOtherPlayer) return
+    let isMatchWithGoogle = checkWithGoogle(newCoords)
+    if (isMatchWithGoogle) {
+        catchGoogle(playerNumber)
+    }
+    _data.heroes[`player${playerNumber}`] = newCoords
 
+    subscriber()
+}
+
+function checkIsValidCoords(coords) {
+    const xIsCorrect = coords.x >=0 && coords.x < _data.settings.currentGridSize.x
+    const yIsCorrect = coords.y >=0 && coords.y < _data.settings.currentGridSize.y
+    return xIsCorrect && yIsCorrect
+}
+
+function checkWithOtherPlayer(coords) {
+    const isMatchWithPlayer1 = coords.x === _data.heroes.player1.x && coords.y === _data.heroes.player1.y
+    const isMatchWithPlayer2 = coords.x === _data.heroes.player2.x && coords.y === _data.heroes.player2.y
+    return isMatchWithPlayer1 || isMatchWithPlayer2
+}
+
+function checkWithGoogle(coords) {
+    let xMatchWithGoogle = coords.x === _data.heroes.google.googleCoords.x
+    let yMatchWithGoogle = coords.y === _data.heroes.google.googleCoords.y
+    return xMatchWithGoogle && yMatchWithGoogle
+}
 
 export function validatePlayerNumber(playerNumber) {
     if (![1, 2].some(number => number === playerNumber)) {
