@@ -276,6 +276,9 @@ export function changePointToMissSelectOption(e) {
 }
 
 export function movePlayer(playerNumber, direction) {
+    if(_data.gameStatus !== GAME_STATUS.GAME_IN_PROGRESS){
+        return;
+    }
     let newCoords = {..._data.heroes[`player${playerNumber}`]}
     switch (direction) {
         case MOVING_DIRECTION.LEFT: {
