@@ -172,6 +172,9 @@ export function getPlayer1Coords() {
 export function getPlayer2Coords() {
     return _data.heroes.player2
 }
+export function getPlayerNumberToWin(){
+    return _data.catch.player1>_data.catch.player2?1:2
+}
 
 
 
@@ -234,7 +237,8 @@ function catchGoogle(playerNumber) {
 }
 
 export function playAgain() {
-    _data.catch = 0
+    _data.catch.player1=0
+    _data.catch.player2=0
     _data.miss = 0
     _data.gameStatus = GAME_STATUS.GAME_SETTINGS
     subscriber()
@@ -321,6 +325,7 @@ function checkWithGoogle(coords) {
     let yMatchWithGoogle = coords.y === _data.heroes.google.googleCoords.y
     return xMatchWithGoogle && yMatchWithGoogle
 }
+
 
 export function validatePlayerNumber(playerNumber) {
     if (![1, 2].some(number => number === playerNumber)) {

@@ -1,4 +1,11 @@
-import {GAME_STATUS, getGameStatus, movePlayer, MOVING_DIRECTION} from "../../data/data.js";
+import {
+    GAME_STATUS,
+    getCatchPoint,
+    getGameStatus,
+    getPlayerNumberToWin,
+    movePlayer,
+    MOVING_DIRECTION
+} from "../../data/data.js";
 import {Settings} from "../settings/Settings.js";
 import {GameResult} from "./game-result/GameResult.js";
 import {MissPoint} from "./game-result/MissPoint.js";
@@ -56,7 +63,7 @@ export function Game() {
             break;
         }
         case GAME_STATUS.GAME_WIN: {
-            element.append(Win());
+            element.append(Win(getPlayerNumberToWin(), getCatchPoint()));
             break;
         }
         case GAME_STATUS.GAME_LOSE: {
