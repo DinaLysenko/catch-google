@@ -1,3 +1,10 @@
+export const EVENTS={
+    GOOGLE_CHANGED: 'GOOGLE_CHANGED',
+    PLAYER1_MOVED: 'PLAYER1_MOVED',
+    PLAYER2_MOVED: 'PLAYER2_MOVED',
+    GAME_STATUS_CHANGED: 'GAME_STATUS_CHANGED',
+    SCORES_CHANGED: 'SCORES_CHANGED',
+}
 export const GAME_STATUS = {
     GAME_SETTINGS: 'settings',
     GAME_IN_PROGRESS: 'progress',
@@ -185,18 +192,16 @@ export function start() {
 
     setIntervalId = setInterval(() => {
         _data.miss++
+        notify(EVENTS.SCORES_CHANGED)
         if (_data.miss === _data.settings.currentPointToLose) {
             _data.gameStatus = GAME_STATUS.GAME_LOSE
+            notify(EVENTS.GAME_STATUS_CHANGED)
             stopInterval()
         } else {
             changeGoogleCoords()
+            notify(EVENTS.GOOGLE_CHANGED)
         }
-        subscriber()
-
     }, 3000)
-
-    subscriber()
-
 }
 
 function stopInterval() {
@@ -220,28 +225,29 @@ export function changeGoogleCoords() {
         )
     _data.heroes.google.googleCoords.x = newX
     _data.heroes.google.googleCoords.y = newY
-
-    subscriber()
 }
 
 function catchGoogle(playerNumber) {
     _data.catch[`player${playerNumber}`]++
+    notify(EVENTS.SCORES_CHANGED)
     stopInterval()
     if (_data.catch[`player${playerNumber}`] === _data.settings.currentPointToWin) {
         _data.gameStatus = GAME_STATUS.GAME_WIN
+        notify(EVENTS.GAME_STATUS_CHANGED)
     } else {
         changeGoogleCoords()
+        notify(EVENTS.GOOGLE_CHANGED)
         start()
     }
-    subscriber()
 }
 
 export function playAgain() {
     _data.catch.player1=0
     _data.catch.player2=0
     _data.miss = 0
+    notify(EVENTS.SCORES_CHANGED)
     _data.gameStatus = GAME_STATUS.GAME_SETTINGS
-    subscriber()
+    notify(EVENTS.GAME_STATUS_CHANGED)
 }
 
 export function changeGridSizeSelectOption(e) {
@@ -252,7 +258,7 @@ export function changeGridSizeSelectOption(e) {
         ...el,
         isSelected: false
     }))
-    subscriber()
+    notify()
 }
 
 export function changePointToWinSelectOption(e) {
@@ -262,7 +268,7 @@ export function changePointToWinSelectOption(e) {
         ...el,
         isSelected: false
     })
-    subscriber()
+    notify()
 }
 
 export function changePointToMissSelectOption(e) {
@@ -272,7 +278,7 @@ export function changePointToMissSelectOption(e) {
         ...el,
         isSelected: false
     })
-    subscriber()
+    notify()
 }
 
 export function movePlayer(playerNumber, direction) {
@@ -308,7 +314,7 @@ export function movePlayer(playerNumber, direction) {
     }
     _data.heroes[`player${playerNumber}`] = newCoords
 
-    subscriber()
+    notify(EVENTS[`PLAYER${playerNumber}_MOVED`])
 }
 
 function checkIsValidCoords(coords) {
@@ -336,11 +342,24 @@ export function validatePlayerNumber(playerNumber) {
     }
 }
 
-let subscriber = () => {
-}
 
+let subscribers=[]
+export function unSubscribe(callback){
+    subscribers=subscribers.filter(s=> s!==callback)
+}
+function notify(eventName){
+    subscribers.forEach(s=>{
+        try{
+            const event= {name: eventName}
+            s(event)
+        } catch (error){
+            console.error(error)
+        }
+
+    })
+}
 export function rerender(callback) {
-    subscriber = callback
+    subscribers.push(callback)
 }
 
 
