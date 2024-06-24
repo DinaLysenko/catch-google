@@ -1,4 +1,4 @@
-export const EVENTS={
+export const EVENTS = {
     GOOGLE_CHANGED: 'GOOGLE_CHANGED',
     PLAYER1_MOVED: 'PLAYER1_MOVED',
     PLAYER2_MOVED: 'PLAYER2_MOVED',
@@ -179,17 +179,16 @@ export function getPlayer1Coords() {
 export function getPlayer2Coords() {
     return _data.heroes.player2
 }
-export function getPlayerNumberToWin(){
-    return _data.catch.player1>_data.catch.player2?1:2
+
+export function getPlayerNumberToWin() {
+    return _data.catch.player1 > _data.catch.player2 ? 1 : 2
 }
-
-
 
 let setIntervalId
 
 export function start() {
     _data.gameStatus = GAME_STATUS.GAME_IN_PROGRESS
-
+    notify(EVENTS.GAME_STATUS_CHANGED)
     setIntervalId = setInterval(() => {
         _data.miss++
         notify(EVENTS.SCORES_CHANGED)
@@ -242,8 +241,8 @@ function catchGoogle(playerNumber) {
 }
 
 export function playAgain() {
-    _data.catch.player1=0
-    _data.catch.player2=0
+    _data.catch.player1 = 0
+    _data.catch.player2 = 0
     _data.miss = 0
     notify(EVENTS.SCORES_CHANGED)
     _data.gameStatus = GAME_STATUS.GAME_SETTINGS
@@ -282,7 +281,7 @@ export function changePointToMissSelectOption(e) {
 }
 
 export function movePlayer(playerNumber, direction) {
-    if(_data.gameStatus !== GAME_STATUS.GAME_IN_PROGRESS){
+    if (_data.gameStatus !== GAME_STATUS.GAME_IN_PROGRESS) {
         return;
     }
     let newCoords = {..._data.heroes[`player${playerNumber}`]}
@@ -318,8 +317,8 @@ export function movePlayer(playerNumber, direction) {
 }
 
 function checkIsValidCoords(coords) {
-    const xIsCorrect = coords.x >=0 && coords.x < _data.settings.currentGridSize.x
-    const yIsCorrect = coords.y >=0 && coords.y < _data.settings.currentGridSize.y
+    const xIsCorrect = coords.x >= 0 && coords.x < _data.settings.currentGridSize.x
+    const yIsCorrect = coords.y >= 0 && coords.y < _data.settings.currentGridSize.y
     return xIsCorrect && yIsCorrect
 }
 
@@ -343,21 +342,24 @@ export function validatePlayerNumber(playerNumber) {
 }
 
 
-let subscribers=[]
-export function unSubscribe(callback){
-    subscribers=subscribers.filter(s=> s!==callback)
+let subscribers = []
+
+export function unSubscribe(callback) {
+    subscribers = subscribers.filter(s => s !== callback)
 }
-function notify(eventName){
-    subscribers.forEach(s=>{
-        try{
-            const event= {name: eventName}
+
+function notify(eventName) {
+    subscribers.forEach(s => {
+        try {
+            const event = {name: eventName}
             s(event)
-        } catch (error){
+        } catch (error) {
             console.error(error)
         }
 
     })
 }
+
 export function rerender(callback) {
     subscribers.push(callback)
 }
